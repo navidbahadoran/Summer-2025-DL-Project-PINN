@@ -25,6 +25,10 @@ pinn_project/
 ├── docs/Project_Proposal.pdf  # 🗂️ Proposal Document
 ├── checkpoints/              # 🔒 Saved model weights (e.g., model.pth)
 │
+├──  eda/
+│   ├── EDA.ipynb      # 📈 Exploratory data analysis
+│   └── eda.pdf        # 🔁 View heatmaps, temporal trends, and normalized COVID case surfaces.
+|
 ├── models/
 │   └── neural_net.py         # 🧠 PINN network architecture
 │
@@ -42,8 +46,7 @@ pinn_project/
 │   └── nyt_to_csv.py         # 🗂️ Converts NYT + shapefile + population into usable CSV
 │
 ├── main_train.py             # 🚀 Main training script for PINN
-├── evaluate.ipynb            # 📊 Model evaluation and visualization
-├── EDA.ipynb                 # 📈 Exploratory data analysis
+├── evaluation.ipynb          # 📊 Model evaluation and visualization               
 ├── config.py                 # ⚙️ All hyperparameters and paths
 └── utils.py                  # 📦 Helper functions: RMSE, plotting, etc.
 ```
