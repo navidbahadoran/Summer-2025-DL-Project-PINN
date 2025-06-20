@@ -1,0 +1,19 @@
+# Core Scientific Libraries
+numpy
+pandas
+scikit-learn
+matplotlib
+
+# Deep Learning
+torch
+
+# Geospatial Libraries (used in nyt_to_csv.py and EDA)
+geopandas
+shapely
+fiona
+pyproj
+
+# Jupyter for notebooks
+notebook
+jupyter
+

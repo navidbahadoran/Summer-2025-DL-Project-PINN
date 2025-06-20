@@ -7,6 +7,7 @@ from data.data_generator import load_normalized_data
 from pinn.pinn_solver import PINNSolver
 from utils import compute_rmse, plot_prediction_surface
 from config import config
+import pickle
 
 
 def main():
@@ -64,6 +65,8 @@ def main():
     checkpoint_path = config["checkpoint_path"]
     os.makedirs(os.path.dirname(checkpoint_path), exist_ok=True)
     torch.save(model.state_dict(), checkpoint_path)
+    with open("checkpoints/loss_history.pkl", "wb") as f:
+    pickle.dump(solver.loss_history, f)
     print(f"Model checkpoint saved to: {checkpoint_path}\n")
 
 
