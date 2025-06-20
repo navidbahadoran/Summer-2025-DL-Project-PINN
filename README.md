@@ -22,6 +22,7 @@ PINNs are trained on real data and guided by the governing partial differential 
 ```
 pinn_project/
 │
+├── docs/Project_Proposal.pdf  # 🗂️ Proposal Document
 ├── checkpoints/              # 🔒 Saved model weights (e.g., model.pth)
 │
 ├── models/
