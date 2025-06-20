@@ -1,6 +1,19 @@
 # PINN-based COVID-19 Modeling using NYT Data
 
-This project demonstrates how to use **Physics-Informed Neural Networks (PINNs)** to model the spatiotemporal spread of COVID-19 using real-world data from the **New York Times (NYT)** COVID-19 dataset. It includes data preprocessing, training of a PINN model, comparison with traditional solvers, and exploratory data analysis (EDA).
+This project demonstrates how to use **Physics-Informed Neural Networks (PINNs)** to model the spatiotemporal spread of COVID-19 in the U.S. using real-world data. We preprocess the dataset, train a PINN model, compare it against traditional numerical solvers, and visualize the results.
+
+---
+
+## 🧠 Project Summary
+
+This work is based on applying **PINNs** to a real epidemiological problem — modeling COVID-19 spread across U.S. counties using:
+
+- The **2D spatial domain** (longitude and latitude)
+- The **temporal evolution** (time axis)
+- A **PDE model** for disease diffusion dynamics
+
+PINNs are trained on real data and guided by the governing partial differential equations (e.g., the heat equation). This allows us to incorporate physical knowledge into machine learning, improving generalization and robustness.
+
 
 ---
 
@@ -56,17 +69,34 @@ Where:
 - `t` is time (normalized)
 - `u` is the normalized case count (cases / population)
 
+The raw COVID-19 case data comes from:
+
+📥 **New York Times COVID-19 dataset** (U.S. counties):  
+🔗 https://github.com/nytimes/covid-19-data
+
+Other supporting datasets:
+- **U.S. Census Shapefiles**: https://www2.census.gov/geo/tiger/
+- **County Population Estimates**: https://www.census.gov/data/datasets/time-series/demo/popest/2020s-counties-total.html
+
+**Note**: The processed CSV file is too large to store in GitHub.  
+Use the provided script below to regenerate it
 ---
 
-## 🚀 How to Run
+## 🚀 How to Run the Project
 
-### Step 1: Prepare the Environment
+### Step 1. Clone the Repo
+
+```bash
+git clone https://github.com/yourusername/pinn_project.git
+cd pinn_project
+
+### Step 2: Prepare the Environment
 
 ```bash
 pip install -r requirements.txt  # Or install: pandas, geopandas, torch, scikit-learn, matplotlib
 ```
 
-### Step 2: Generate the Dataset
+### Step 3: Generate the Dataset
 
 ```bash
 python scripts/nyt_to_csv.py
@@ -74,30 +104,34 @@ python scripts/nyt_to_csv.py
 
 This will create `data/covid_county_cases.csv` from raw NYT, geometry, and population files.
 
-### Step 3: Run Exploratory Analysis
+### Step 4: Run Exploratory Analysis
 
 Open:
 
 ```bash
-EDA.ipynb
+jupyter notebook EDA.ipynb
 ```
 
-To explore spatial and temporal trends in the dataset.
+View heatmaps, temporal trends, and normalized COVID case surfaces.
 
-### Step 4: Train the PINN
+### Step 5: Train the PINN
 
 ```bash
 python main_train.py
 ```
 
-This will train the model and save `checkpoints/model.pth`.
+- Trains the PINN on real data
 
-### Step 5: Evaluate the Model
+- Applies residual loss from the PDE
+
+- Saves to checkpoints/model.pth
+
+### Step 6: Evaluate the Model
 
 Open:
 
 ```bash
-evaluate.ipynb
+jupyter notebook evaluate.ipynb
 ```
 
 This notebook:
@@ -132,11 +166,29 @@ A full PDF proposal is available in `docs/Project_Proposal.pdf` (you can move th
 
 ---
 
-## 🧪 Requirements
+## 🧪 Requirements Summary
+Minimum Python 3.8+
+- torch>=1.12
+- numpy
+- pandas
+- matplotlib
+- geopandas
+- scikit-learn
 
-- Python 3.8+
-- PyTorch
-- pandas, matplotlib, geopandas
+Install with:
+
+pip install -r requirements.txt
+
+---
+
+inference
+
+🤝 Acknowledgments
+- NYT Data Team
+
+- U.S. Census Bureau
+
+- Raissi et al. (2019), Physics-Informed Neural Networks (PINNs)
 
 ---
 
