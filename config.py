@@ -3,14 +3,19 @@ import torch
 config = {
     # Data
     "data_path": "D:/Programming/Summer-2025-DL-Project-PINN/data/covid_county_cases.csv",  # Path to preprocessed CSV
+    "fd_path" : "D:/Programming/Summer-2025-DL-Project-PINN/data/fd_solution.npz",
+
     "train_test_split": 0.8,                     # Ratio for train/test split
     "n_collocation": 10000,                      # Number of collocation (physics) points
 
-    # Model
-    "input_dim": 3,       # (x, y, t)
-    "output_dim": 1,      # u
-    "hidden_dim": 64,     # Neurons per hidden layer
-    "hidden_layers": 4,   # Number of hidden layers
+   # Model Architecture
+    "input_dim": 3,                                  # (x, y, t)
+    "output_dim": 1,                                 # u
+    "hidden_dim": 64,                                # Neurons per hidden layer
+    "hidden_layers": 4,                              # Number of hidden layers
+    "use_batch_norm": True,                          # Batch normalization toggle
+    "activation": "tanh",                            # Activation function
+    "initializer": "xavier",                         # Weight initializer
 
     # Training
     "epochs": 5000,
