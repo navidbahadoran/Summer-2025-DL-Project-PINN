@@ -34,6 +34,7 @@ pinn_project/
 │
 ├── data/
 │   ├── covid_county_cases.csv  # ✅ Processed NYT dataset
+│   └── raw_data_processor.py   # 🔁# Converts raw NYT data to spatial-temporal CSV
 │   └── data_generator.py       # 🔁 Loads/normalizes data and creates training/test sets
 │
 ├── pinn/
@@ -43,7 +44,7 @@ pinn_project/
 │   └── fd_solver.py          # 🧮 Finite Difference solver for benchmarking (optional)
 │
 ├── scripts/
-│   └── nyt_to_csv.py         # 🗂️ Converts NYT + shapefile + population into usable CSV
+│   └── adversarial.py         # 🗂️ Purturbing initial and boundary condition
 │
 ├── main_train.py             # 🚀 Main training script for PINN
 ├── evaluation.ipynb          # 📊 Model evaluation and visualization               
@@ -103,7 +104,7 @@ pip install -r requirements.txt  # Or install: pandas, geopandas, torch, scikit-
 ### Step 3: Generate the Dataset
 
 ```bash
-python scripts/nyt_to_csv.py
+python data/raw_data_processor.py
 ```
 
 This will create `data/covid_county_cases.csv` from raw NYT, geometry, and population files.
