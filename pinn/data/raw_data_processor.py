@@ -22,8 +22,10 @@ import zipfile
 import pandas as pd
 import geopandas as gpd
 import urllib3
+from config import config
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 
 
 def load_nyt_data():
@@ -35,8 +37,8 @@ def load_nyt_data():
 
 def load_geometry():
     shapefile_url = "https://www2.census.gov/geo/tiger/GENZ2022/shp/cb_2022_us_county_20m.zip"
-    zip_path = "./data/county_shapefiles.zip"
-    extract_path = "./data/county_shapefiles"
+    zip_path = config["zip_path"]
+    extract_path = config["extract_path"]
 
     if not os.path.exists(zip_path):
         r = requests.get(shapefile_url, verify=False)
@@ -56,13 +58,15 @@ def load_geometry():
     gdf["lat"] = gdf_proj.centroid.to_crs(epsg=4326).y
     return gdf[["fips", "lon", "lat"]]
 
+
 def load_population_data():
     pop_url = "https://www2.census.gov/programs-surveys/popest/datasets/2020-2022/counties/totals/co-est2022-alldata.csv"
     pop_df = pd.read_csv(pop_url, encoding="latin1")
     pop_df['fips'] = pop_df['STATE'].astype(str).str.zfill(2) + pop_df['COUNTY'].astype(str).str.zfill(3)
     return pop_df[['fips', 'POPESTIMATE2022']].rename(columns={'POPESTIMATE2022': 'population'})
 
-def generate_processed_dataset(state_filter=None, top_n=None, output_path="./data/covid_county_cases.csv", date_cutoff=None):
+
+def generate_processed_dataset(state_filter=None, top_n=None, output_path=config["data_path"], date_cutoff=None):
     df = load_nyt_data()
     gdf = load_geometry()
     pop_df = load_population_data()

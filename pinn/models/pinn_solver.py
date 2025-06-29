@@ -104,7 +104,7 @@ class PINNSolver:
             adam.step()
             self.loss_history.append(loss.item())
 
-            if epoch % 500 == 0 or epoch == 999:
+            if epoch % config["print_interval"] == 0 or epoch == 999:
                 print(f"[Adam {epoch:05d}] Loss: {loss.item():.6e}")
 
         # LBFGS Phase

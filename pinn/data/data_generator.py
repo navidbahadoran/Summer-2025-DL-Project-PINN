@@ -4,6 +4,13 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 
 
+def split_ic_bc(X_u, u, t_threshold=0.01):
+    # Split IC: time near 0
+    ic_mask = X_u[:, 2] < t_threshold
+    bc_mask = ~ic_mask
+    return X_u[ic_mask], u[ic_mask], X_u[bc_mask], u[bc_mask]
+
+
 def load_normalized_data(csv_path, n_collocation=10000, split_ratio=0.8, device="cpu"):
     """
     Loads CSV created from NYT dataset, splits into boundary & collocation sets,

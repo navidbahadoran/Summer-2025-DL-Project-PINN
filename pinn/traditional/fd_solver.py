@@ -11,7 +11,8 @@ def solve_heat_equation_fd(nx=50, ny=50, nt=100, T=1.0, alpha=1.0):
     """
     dx = 1.0 / (nx - 1)
     dy = 1.0 / (ny - 1)
-    dt = T / nt
+    dt = 0.25 * min(dx, dy)**2  # conservative CFL-like setting
+
 
     x = np.linspace(0, 1, nx)
     y = np.linspace(0, 1, ny)
