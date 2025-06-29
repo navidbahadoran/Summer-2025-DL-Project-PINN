@@ -32,6 +32,7 @@ Summer-2025-DL-project-PINN/
 │
 ├── dataset/
 │   └── covid_county_cases.csv             # ✅ Processed NYT dataset
+|   └── county_shapefiles
 │
 ├── eda/
 │   ├── EDA.ipynb                          # 📈 Exploratory data analysis
