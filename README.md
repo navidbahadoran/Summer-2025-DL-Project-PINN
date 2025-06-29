@@ -20,37 +20,48 @@ PINNs are trained on real data and guided by the governing partial differential 
 ## 📁 Project Structure
 
 ```
-pinn_project/
+Summer-2025-DL-project-PINN/
 │
-├── docs/Project_Proposal.pdf  # 🗂️ Proposal Document
-├── checkpoints/              # 🔒 Saved model weights (e.g., model.pth)
+├── docs/
+│   └── Project_Proposal.pdf               # 🗂️ Proposal Document
 │
-├──  eda/
-│   ├── EDA.ipynb      # 📈 Exploratory data analysis
-│   └── eda.pdf        # 🔁 View heatmaps, temporal trends, and normalized COVID case surfaces.
-|
-├── models/
-│   └── neural_net.py         # 🧠 PINN network architecture
+├── checkpoints/                           # 🔒 Saved model weights (PINN and GNN)
+│   ├── pinn_model.pt
+│   ├── gnn_model.pt
+│   └── gnn_target_scaler.pt
 │
-├── data/
-│   ├── covid_county_cases.csv  # ✅ Processed NYT dataset
-│   └── raw_data_processor.py   # 🔁# Converts raw NYT data to spatial-temporal CSV
-│   └── data_generator.py       # 🔁 Loads/normalizes data and creates training/test sets
+├── dataset/
+│   └── covid_county_cases.csv             # ✅ Processed NYT dataset
+│
+├── eda/
+│   ├── EDA.ipynb                          # 📈 Exploratory data analysis
+│   └── eda.pdf                            # 📊 Heatmaps, trends, normalized COVID surfaces
 │
 ├── pinn/
-│   └── pinn_solver.py        # 🔍 PINN residual formulation, autograd, loss
+│   ├── data/
+│   │   ├── data_generator.py              # 🔁 Loads/normalizes data and creates training/test sets
+│   │   └── raw_data_processor.py          # 🔁 Converts raw NYT data to spatial-temporal CSV
+│   ├── models/
+│   │   ├── neural_net.py                  # 🧠 PINN network
+│   │   └── pinn_solver.py                 # 🔧 Residuals, autograd, physics loss
+│   ├── scripts/
+│   │   ├── adversarial.py                 # ⚔️ Perturbation attacks
+│   │   └── robustness_eval.py             # 🧪 Robustness testing
+│   └── traditional/
+│       └── fd_solver.py                   # 🧮 Finite difference baseline
 │
-├── traditional/
-│   └── fd_solver.py          # 🧮 Finite Difference solver for benchmarking (optional)
+├── gnn/
+│   ├── models/
+│   │   └── gnn_model.py                   # 🧠 GNN architecture
+│   └── data/
+│       ├── graph_dataset.py               # 🌐 GNN dataset + geometry → edge_index
+│       └── shapefile/                     # 🗺️  County shapefiles
 │
-├── scripts/
-│   └── adversarial.py         # 🗂️ Purturbing initial and boundary condition
-│
-├── main_train.py             # 🚀 Main training script for PINN
-├── evaluation.ipynb          # 📊 Model evaluation and visualization               
-├── config.py                 # ⚙️ All hyperparameters and paths
-└── utils.py                  # 📦 Helper functions: RMSE, plotting, etc.
-```
+├── train.py                               # 🚀 Unified training script (PINN & GNN modes)
+├── evaluation.ipynb                       # 📊 Compare GNN vs PINN predictions and metrics
+├── config.py                              # ⚙️ All hyperparameters and file paths
+└── utils.py                               # 📦 Shared utilities (RMSE, plotting, masking, etc.)
+
 
 ---
 
