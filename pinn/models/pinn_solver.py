@@ -20,6 +20,11 @@ class PINNSolver:
         self.device = device
         self.loss_history = []
 
+    def predict(self, X):
+        self.model.eval()
+        with torch.no_grad():
+            return self.model(X.to(self.device)).cpu().numpy()
+
     def net_residual(self, X_f):
         X_f = X_f.clone().detach().requires_grad_(True).to(self.device)
         u_pred = self.model(X_f)
@@ -81,6 +86,9 @@ class PINNSolver:
 
         # Warmup with Adam
         print("[INFO] Starting Adam warm-up phase")
+        best_loss = float("inf")
+        patience_counter = 0
+        patience = config.get("patience", 50)
         for epoch in range(epochs):
             self.model.train()
             adam.zero_grad()
@@ -106,6 +114,17 @@ class PINNSolver:
 
             if epoch % config["print_interval"] == 0 or epoch == 999:
                 print(f"[Adam {epoch:05d}] Loss: {loss.item():.6e}")
+                
+            # Early stopping check
+            if loss.item() < best_loss - 1e-4:
+                best_loss = loss.item()
+                patience_counter = 0
+                torch.save(self.model.state_dict(), config["pinn_model_path"])
+            else:
+                patience_counter += 1
+                if patience_counter >= patience:
+                    print(f"[INFO] Early stopping triggered at epoch {epoch}")
+                    break
 
         # LBFGS Phase
         if use_lbfgs:
@@ -118,3 +137,4 @@ class PINNSolver:
                                       line_search_fn='strong_wolfe')
             lbfgs.step(closure)
             print("[INFO] LBFGS optimization completed.")
+            torch.save(self.model.state_dict(), config["pinn_model_path"])

@@ -63,8 +63,9 @@ def load_edges_from_geometry(shapefile_path, node_coords, simplify=True):
     return edge_index
 
 
-def build_static_graph(data_csv, shapefile_path, history=3):
-    df = pd.read_csv(data_csv)
+def build_static_graph(data_csv_path, shapefile_path, history=3):
+    print("[INFO] Read CSV file from",data_csv_path)
+    df = pd.read_csv(data_csv_path)
     df = df.sort_values(by=["lon", "lat", "t"]).reset_index(drop=True)
 
     # Clean floating point keys and define unique nodes
@@ -118,6 +119,16 @@ def build_static_graph(data_csv, shapefile_path, history=3):
     ]
     torch.save(scaler_y, config["gnn_scaler_y"])
 
+    # === Scale X features as well ===
+    x_all = torch.cat(features_per_time).numpy()
+    scaler_x = StandardScaler().fit(x_all)
+    features_per_time = [
+        torch.tensor(scaler_x.transform(x.numpy()), dtype=torch.float32)
+        for x in features_per_time
+    ]
+    torch.save(scaler_x, config["gnn_scaler_x"])
+
+
     print("[INFO] Matching counties by geometry...")
     edge_index = load_edges_from_geometry(shapefile_path, node_positions)
     max_node_id = edge_index.max().item()
@@ -126,33 +137,13 @@ def build_static_graph(data_csv, shapefile_path, history=3):
 
     data_list = []
     for i, (x, y) in enumerate(zip(features_per_time, targets_per_time)):
-        # try:
-            # if x.shape[0] != n_nodes or y.shape[0] != n_nodes:
-            #     print(f"[SKIP] Sample {i}: Shape mismatch (x={x.shape}, y={y.shape})")
-            #     continue
 
         data = Data(x=x, y=y, edge_index=edge_index.clone())
-
-            # # Check for invalid keys
-            # invalid_keys = [k for k in data._store.keys() if not isinstance(k, str)]
-            # for k in data._store.keys():
-            #     if not isinstance(k, str):
-            #         print(f"[FATAL] Sample {i} has non-string key: {k}")
-            #         raise ValueError(f"Invalid key type {type(k)} in Data object at index {i}")
-
-            # if invalid_keys:
-            #     print(f"[FATAL] Sample {i} has non-string keys: {invalid_keys}")
-            #     continue
-
-            # if i < 3:
-            #     print(f"[DEBUG] Sample {i} keys: {list(data.keys())}, shapes: x={x.shape}, y={y.shape}")
-
         data_list.append(data)
-        # except Exception as e:
-        #     print(f"[SKIP] Sample {i} failed due to error: {e}")
-
     print(f"[INFO] Final valid graph samples: {len(data_list)}")
-    return data_list, node_positions
+    torch.save((data_list, node_positions), config["gnn_dataset_path"])
+    print("[INFO] Graph dataset has been saved in: ", config["gnn_dataset_path"])
+    return data_list, node_positions 
 
 
 

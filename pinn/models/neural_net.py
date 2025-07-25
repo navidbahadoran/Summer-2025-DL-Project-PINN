@@ -34,5 +34,10 @@ class PINN(nn.Module):
                 nn.init.xavier_normal_(m.weight)
                 nn.init.zeros_(m.bias)
 
+    def predict(self, x):
+        self.eval()
+        with torch.no_grad():
+            return self.forward(x)
+
     def forward(self, x):
         return self.model(x)

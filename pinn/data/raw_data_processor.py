@@ -26,7 +26,15 @@ from config import config
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+def load_nyt_raw_data():
+    url = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"
+    df = pd.read_csv(url, parse_dates=["date"])
+    df = df[df["fips"].notna()]
+    df["fips"] = df["fips"].astype(float).astype(int).astype(str).str.zfill(5)
+    df.to_csv(config["raw_data_path"], index=False)
+    print("Saved raw dataset to: ",config["raw_data_path"])
 
+    return df
 
 def load_nyt_data():
     url = "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"
@@ -67,6 +75,7 @@ def load_population_data():
 
 
 def generate_processed_dataset(state_filter=None, top_n=None, output_path=config["data_path"], date_cutoff=None):
+    _ = load_nyt_raw_data()
     df = load_nyt_data()
     gdf = load_geometry()
     pop_df = load_population_data()
@@ -88,7 +97,6 @@ def generate_processed_dataset(state_filter=None, top_n=None, output_path=config
     df['t'] = (df['date'] - t0).dt.days
     df['u'] = df['cases'] / df['population'] * 1e5
     df_out = df[['lon', 'lat', 't', 'u']].sort_values(by=['lon', 'lat', 't'])
-    # os.makedirs(os.path.dirname(output_path), exist_ok=True)
     df_out.to_csv(output_path, index=False)
     print(f"Saved normalized dataset to: {output_path}")
 

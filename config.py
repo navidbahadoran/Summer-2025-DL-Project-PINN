@@ -2,6 +2,7 @@ import torch
 
 config = {
     # Data
+    "raw_data_path": "./dataset/raw_covid_county_cases.csv",  # Path to preprocessed CSV
     "data_path": "./dataset/covid_county_cases.csv",  # Path to preprocessed CSV
     "gnn_dataset_path": "./dataset/processed_graph_dataset.pt",  # Path to gnn preprocessed CSV
     "fd_path": "./dataset/fd_solution.npz",
@@ -36,9 +37,13 @@ config = {
 
     # Logging and Evaluation
     "print_interval": 500,                         # Print frequency
-    "checkpoint_path": "./checkpoints/model.pth", # Model save path
+    "pinn_model_path": "./checkpoints/model.pth", # Model save path
     "gnn_model_path": "./checkpoints/gnn_model.pth", # gnn Model save path
+    "pinn_scaler_x": "./checkpoints/pinn_input_scaler.pkl",
+    "pinn_scaler_y": "./checkpoints/pinn_target_scaler.pkl",
     "gnn_scaler_y": "./checkpoints/gnn_target_scaler.pt",
     "gnn_scaler_x": "./checkpoints/gnn_input_scaler.pt",
+    "gnn_pred_path": "./checkpoints/gnn_preds.npz",
+    "pinn_pred_path": "./checkpoints/pinn_preds.npz",
     "plot_results": True                        # Toggle result plotting
 }

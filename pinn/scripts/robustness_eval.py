@@ -12,7 +12,7 @@ from pinn.scripts.adversarial import (
     perturb_boundary_conditions, 
     perturb_collocation_points
 )
-from utils import compute_rmse, compute_errors
+from utils import compute_metrics, compute_errors
 from config import config
 import matplotlib.pyplot as plt
 import pickle
@@ -108,15 +108,15 @@ def run_robustness_sweep(epsilons=[0.0, 0.01, 0.02, 0.05, 0.1], epochs=2000):
         model.eval()
         with torch.no_grad():
             u_pred = model(X_test)
-            rmse = compute_rmse(u_pred, u_test, apply_expm1=True)
+            metrics = compute_metrics(u_pred, u_test, apply_expm1=True)
             errors = compute_errors(u_pred.cpu().numpy(), u_test.cpu().numpy())
 
         abs_residual, mean_res, max_res = compute_residual(model, X_f_train)
-        print(f"[ε={eps:.2f}] RMSE = {rmse:.4f} | Rel L2 = {errors['Relative L2 Error']:.4f} | Max Error = {errors['Max Abs Error']:.4f}")
+        print(f"[ε={eps:.2f}] RMSE = {metrics['rmse']:.4f} | Rel L2 = {errors['Relative L2 Error']:.4f} | Max Error = {errors['Max Abs Error']:.4f}")
         print(f"PDE Residuals: Mean = {mean_res:.4e}, Max = {max_res:.4e}")
 
         results[eps] = {
-            "rmse": rmse,
+            "rmse": metrics["rmse"],
             **errors,
             "loss_history": solver.loss_history,
             "mean_residual": mean_res,

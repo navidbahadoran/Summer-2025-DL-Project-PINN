@@ -96,15 +96,17 @@ def plot_loss_history(loss_history):
     plt.show()
 
 
-def compute_rmse(y_pred, y_true, apply_expm1=True):
+def compute_metrics(y_pred, y_true, apply_expm1=True):
     if isinstance(y_pred, torch.Tensor):
-        y_pred = y_pred.cpu().detach()
+        y_pred = y_pred.cpu().detach().numpy()
     if isinstance(y_true, torch.Tensor):
-        y_true = y_true.cpu().detach()
+        y_true = y_true.cpu().detach().numpy()
     if apply_expm1:
-        y_pred = torch.expm1(y_pred)
-        y_true = torch.expm1(y_true)
-    return np.sqrt(mean_squared_error(y_true.numpy(), y_pred.numpy()))
+        y_pred = np.expm1(y_pred)
+        y_true = np.expm1(y_true)
+    rmse = np.sqrt(mean_squared_error(y_true, y_pred))
+    mae = mean_absolute_error(y_true, y_pred)
+    return {'rmse': rmse, 'mae': mae}
 
 
 def plot_prediction_surface(X, u_pred, title="Predicted Surface"):
@@ -145,11 +147,11 @@ def plot_time_series(df, lon, lat, title="Time Series at Location"):
     plt.show()
 
 
-# ----------- GNN-Specific Utilities ----------- #
-def compute_metrics(preds, targets):
-    rmse = np.sqrt(mean_squared_error(targets, preds))
-    mae = mean_absolute_error(targets, preds)
-    return {'rmse': rmse, 'mae': mae}
+# # ----------- GNN-Specific Utilities ----------- #
+# def compute_metrics(preds, targets):
+#     rmse = np.sqrt(mean_squared_error(targets, preds))
+#     mae = mean_absolute_error(targets, preds)
+#     return {'rmse': rmse, 'mae': mae}
 
 
 def plot_learning_curve(train_losses, val_rmse=None):

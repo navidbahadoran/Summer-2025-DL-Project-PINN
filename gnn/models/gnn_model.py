@@ -5,6 +5,13 @@ import torch.nn.functional as F
 from torch.nn import Linear
 from torch_geometric.nn import GCNConv
 from torch_geometric.data import Data
+# gnn/models/gnn_model.py
+
+import torch
+import torch.nn.functional as F
+from torch.nn import Linear
+from torch_geometric.nn import GCNConv
+from torch_geometric.data import Data
 from config import config
 
 class GNNPredictor(torch.nn.Module):
@@ -23,6 +30,7 @@ class GNNPredictor(torch.nn.Module):
         self.act = torch.nn.ReLU()
         self.drop = torch.nn.Dropout(p=0.2)
         self.fc_out = torch.nn.Linear(hidden_dim, out_dim)
+        self.output_activation = torch.nn.Softplus()  # Ensures non-negative output
 
     def forward(self, x, edge_index):
         for conv, bn in zip(self.convs, self.bns):
@@ -30,7 +38,7 @@ class GNNPredictor(torch.nn.Module):
             x = bn(x)
             x = self.act(x)
             x = self.drop(x)
-        return self.fc_out(x)
+        return self.output_activation(self.fc_out(x))  # Ensures output ≥ 0
 
 
 if __name__ == "__main__":
@@ -40,3 +48,5 @@ if __name__ == "__main__":
     model = GNNPredictor(config["gnn_in_dim"], config["gnn_hidden_dim"], config["gnn_out_dim"])
     out = model(x, edge_index)
     print("Output shape:", out.shape)
+    print("Output min value:", out.min().item())  # Should be ≥ 0
+
