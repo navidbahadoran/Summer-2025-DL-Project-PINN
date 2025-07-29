@@ -121,7 +121,7 @@ def train_gnn():
     best_val_loss = float('inf')
     patience = config.get("patience", 50)
     patience_counter = 0
-
+    loss_history = []
     for epoch in range(1, config["epochs"] + 1):
         model.train()
         total_loss = 0
@@ -136,6 +136,7 @@ def train_gnn():
             total_loss += loss.item()
 
         avg_loss = total_loss / len(train_loader)
+        loss_history.append(avg_loss)
         if epoch % config["print_interval"] == 0 or epoch == 1:
             print(f"Epoch {epoch}/{config['epochs']} - Loss: {avg_loss:.4f}")
 
@@ -182,6 +183,9 @@ def train_gnn():
     print(f"GNN RMSE (original scale): {metrics['rmse']:.4f}, MAE (original scale): {metrics['mae']:.4f}")
     np.savez(config["gnn_pred_path"], preds=preds, targets=targets, coords=coords)
     print("[INFO] Predictions saved to ", config["gnn_pred_path"] )
+
+    with open(config["loss_path_gnn"], "wb") as f:
+        pickle.dump(loss_history, f)
 
 
 def main():

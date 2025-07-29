@@ -10,6 +10,7 @@ config = {
     "extract_path": "./dataset/county_shapefiles",
     "shape_file_path": "./dataset/county_shapefiles/cb_2022_us_county_20m.shp",
     "loss_path": "./checkpoints/loss_history.pkl",
+    "loss_path_gnn": "./checkpoints/gnn_loss_history.pkl",
 
     "train_test_split": 0.8,                     # Ratio for train/test split
     "n_collocation": 10000,                      # Number of collocation (physics) points
